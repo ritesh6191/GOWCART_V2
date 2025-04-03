@@ -3,6 +3,9 @@ import dbConnect from "./db/dbConf.js";
 import userRouter from "./routers/user.route.js";
 import dotenv from "dotenv";
 import cors from "cors";
+import multer from "multer";
+import cookieParser from "cookie-parser";
+
 
 
 dotenv.config({
@@ -12,10 +15,14 @@ dotenv.config({
 
 const app = express();
 const port = process.env.PORT || 3000;
+const upload = multer();
 
+app.use(upload.any());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 
 dbConnect();
@@ -25,6 +32,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRouter);
+
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
