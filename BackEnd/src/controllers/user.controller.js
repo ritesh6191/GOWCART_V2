@@ -45,38 +45,69 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async(req, res) => {
-        const { phone, password} = req.body;
+      try {
+          const { phone, password} = req.body;
+  
+          if([phone, password].some(field => !field?.trim())){
+          return res.status(400).json({ message: "Please Enter Phone And Password"})
+          }
+  
+          const user = await User.findOne({ phone });
+          
+          if(!user) return res.status(401).json({ message: "User Not Register Please Register First"})
+  
+          const isPasswordValid = await user.isPasswordCorrect(password);
+              
+          if(!isPasswordValid) return res.status(401).json({ message : "Invalid Password"});
+  
+          const {accessToken, refreshToken} = await genrateAccessAndRefreshToken(user._id);
+  
+          const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+  
+          const option = {
+              httpOnly : true,
+              secure : true,
+          }
+  
+          return res.status(200)
+          .cookie("accessToken", accessToken, option)
+          .cookie("refreshToken", refreshToken, option)
+          .json({message : "User Logged In Successefully",
+              data : loggedInUser,
+          })
+      } catch (error) {
+        console.error("Problem Ocuured While Log In:",error)
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+}
 
-        if([phone, password].some(field => !field?.trim())){
-        return res.status(400).json({ message: "Please Enter Phone And Password"})
+const logoutUser = async (req, res) => {
+ 
+       await User.findByIdAndUpdate(req.user._id, {
+
+            $unset : {
+                refreshToken : 1
+                }
+        },
+        {
+            new : true
         }
+    )
 
-        const user = await User.findOne({ phone });
-        
-        if(!user) return res.status(401).json({ message: "User Not Register Please Register First"})
+    const option = {
+        httpOnly : true,
+        secure : true,
+    }
 
-        const isPasswordValid = await user.isPasswordCorrect(password);
-            
-        if(!isPasswordValid) return res.status(401).json({ message : "Invalid Password"});
-
-        const {accessToken, refreshToken} = await genrateAccessAndRefreshToken(user._id);
-
-        const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
-
-        const option = {
-            httpOnly : true,
-            secure : true,
-        }
-
-        return res.status(200)
-        .cookie("accessToken", accessToken, option)
-        .cookie("refreshToken", refreshToken, option)
-        .json({message : "User Logged In Successefully",
-            data : loggedInUser,
-        })
+    return res.status(200)
+    .clearCookie("accessToken",option)
+    .clearCookie("refreshToken",option)
+    .json({message: "User Logged Out Succesfully"})
 }
 
 
 
 export { registerUser,
-         loginUser };
+         loginUser,
+         logoutUser
+         };
