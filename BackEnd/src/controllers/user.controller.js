@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import jwt, { decode } from "jsonwebtoken";
 
 const genrateAccessAndRefreshToken = async(userId) => {
     const user = await User.findById(userId)
@@ -105,9 +106,36 @@ const logoutUser = async (req, res) => {
     .json({message: "User Logged Out Succesfully"})
 }
 
+const refreshAccessToken = async(req, res) => {
+
+    const incomingToken = req.cookies?.refreshToken;
+
+    if(!incomingToken) return res.status(401).json({message: "Unauthorized Request"});
+
+    const decodedToken = jwt.verify(incomingToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const user = await User.findById(decodedToken?._id);
+    if(!user) return res.status(401).json({message: "Invalid refresh Token!"});
+
+    if(user.refreshToken !== incomingToken) return res.status(401).json({message: "User not authorized"});
+
+   const {accessToken, refreshToken} = await genrateAccessAndRefreshToken(user._id);
+
+   const option = {
+    httpOnly : true,
+    secure : true
+   }
+
+   return res.status(200)
+   .cookie("accessToken", accessToken, option)
+   .cookie("refreshToken", refreshToken, option)
+   .json({message: "Access Token Refreshed"})
+}
+
 
 
 export { registerUser,
          loginUser,
-         logoutUser
+         logoutUser,
+         refreshAccessToken
          };
