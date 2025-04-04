@@ -13,8 +13,19 @@ const cowSchema = new  Schema({
     },
     CowImage1 : String, //Cloudiniry URL
     CowImage2 : String, //Cloudiniry URL
+    location: {
+        type: {
+          type: String,
+          default: "Point"
+        },
+        coordinates: {
+          type: [Number], // [longitude, latitude]
+        }
+      }
 
 },{timestamps: true})
+
+cowSchema.index({ location: "2dsphere" });
 
 const Cow = mongoose.model("Cow", cowSchema);
 

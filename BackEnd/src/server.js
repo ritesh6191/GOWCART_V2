@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import multer from "multer";
 import cookieParser from "cookie-parser";
+import cowRouter from "./routers/cow.route.js"
 
 
 
@@ -17,7 +18,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const upload = multer();
 
-app.use(upload.any());
+//app.use(upload.any());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRouter);
+app.use("/sell", cowRouter);
 
 
 app.listen(port, () => {
