@@ -16,7 +16,7 @@ dotenv.config({
 
 const app = express();
 const port = process.env.PORT || 3000;
-const upload = multer();
+//const upload = multer();
 
 //app.use(upload.any());
 app.use(cors());
