@@ -132,10 +132,22 @@ const refreshAccessToken = async(req, res) => {
    .json({message: "Access Token Refreshed"})
 }
 
+const authUser = (req, res) => {
+    try {
+
+        return res.status(200).json({loggedIn: true, user:req.user})
+        
+    } catch (error) {
+        res.status(404).json({meessage: error})
+    }
+
+}
+
 
 
 export { registerUser,
          loginUser,
          logoutUser,
-         refreshAccessToken
+         refreshAccessToken,
+         authUser,
          };

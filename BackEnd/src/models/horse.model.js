@@ -1,18 +1,20 @@
 import mongoose, { Schema } from "mongoose";
 
-const cowSchema = new  Schema({
+const horseSchema = new  Schema({
     Breed : String,
     Age : Number,
-    CalvinCount  : Number,
-    MilkCapacity : Number,
+    Weight: Number,
+    Height: Number,
+    Health: String,
     Address: String,
     Price: Number,
+    Description: String,
     Owner:{
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    CowImage1 : String, //Cloudiniry URL
-    CowImage2 : String, //Cloudiniry URL
+    HorseImage1 : String, //Cloudiniry URL
+    HorseImage2 : String, //Cloudiniry URL
     location: {
         type: {
           type: String,
@@ -25,8 +27,8 @@ const cowSchema = new  Schema({
 
 },{timestamps: true})
 
-cowSchema.index({ location: "2dsphere" });
+horseSchema.index({ location: "2dsphere" });
 
-const Cow = mongoose.model("Cow", cowSchema);
+const Horse = mongoose.model("Horse", horseSchema);
 
-export default Cow;
+export default Horse;

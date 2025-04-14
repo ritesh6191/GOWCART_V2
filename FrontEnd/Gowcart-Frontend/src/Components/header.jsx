@@ -2,14 +2,29 @@ import React, { useState } from 'react';
 import Logo from '../assests/gowcart-logo.png';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const user = {
-    name: 'Ravi Patil',
-    email: 'ravi@gowcart.in',
-    phone: '+91 9876543210',
+  const logoutUser = async () => {
+    try {
+      await axios.post(
+        "/user/logout",
+        {},
+        { withCredentials: true }
+      );
+      toast.success("Logged out successfully");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } catch (error) {
+      console.error("Logout error:", error.response?.data || error.message);
+      toast.error("Logout failed");
+    }
   };
 
   return (
@@ -47,10 +62,13 @@ const Header = () => {
           <IoClose size={24} className="cursor-pointer" onClick={() => setSidebarOpen(false)} />
         </div>
         <div className="p-4 space-y-2">
-        <button className="mt-4 bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 w-full">
+          <button className="mt-4 bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 w-full">
             Go To Profile
           </button>
-          <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-800 w-full">
+          <button
+            onClick={logoutUser}
+            className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-800 w-full"
+          >
             Logout
           </button>
         </div>

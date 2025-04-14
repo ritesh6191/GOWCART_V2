@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // ✅ import navigation
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate(); // ✅ initialize
 
   const onSubmit = async (data) => {
     setServerError('');
     setSuccess('');
 
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/auth/login', // Change this to your login endpoint
+      const response = await axios.post('/user/login',
         {
-          email: data.email,
+          phone: data.phone,
           password: data.password,
         },
         {
-          withCredentials: true, // Important: enables cookie setting
+          withCredentials: true,
         }
       );
 
       setSuccess(response.data.message);
-      // You can redirect to dashboard or homepage here:
-      // navigate('/dashboard');
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
     } catch (err) {
       console.error(err);
       setServerError(
@@ -48,15 +51,21 @@ const LoginForm = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
             <input
-              type="email"
-              {...register('email', { required: 'Email is required' })}
+              type="text"
+              {...register('phone', {
+                required: 'Phone number is required',
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: 'Phone number must be 10 digits',
+                },
+              })}
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter your email"
+              placeholder="Enter your 10-digit phone number"
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
             )}
           </div>
 

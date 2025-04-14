@@ -12,8 +12,14 @@ const userSchema = new mongoose.Schema(
     refreshToken: { type: String },
     posts: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Cow",
+        itemId: {
+          type: Schema.Types.ObjectId,
+          refPath: "posts.modelType",
+        },
+        modelType: {
+          type: String,
+          enum: ["Cow", "Goat", "Buffalo", "Horse"],
+        },
       },
     ],
   },
