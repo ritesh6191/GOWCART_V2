@@ -143,6 +143,25 @@ const authUser = (req, res) => {
 
 }
 
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id)
+        .select("-password -refreshToken")
+        .populate({
+          path: "posts.itemId",       // tell Mongoose to populate `itemId`
+          select: "-__v",              // optional: exclude __v field from populated data
+        });
+  
+      if (!user) return res.status(404).json({ message: "User Not Found" });
+  
+      return res.status(200).json({ data: user });
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
+
 
 
 export { registerUser,
@@ -150,4 +169,5 @@ export { registerUser,
          logoutUser,
          refreshAccessToken,
          authUser,
+         getUserProfile,
          };

@@ -4,11 +4,12 @@ import { FaUserCircle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+
 
   const logoutUser = async () => {
     try {
@@ -62,9 +63,11 @@ const Header = () => {
           <IoClose size={24} className="cursor-pointer" onClick={() => setSidebarOpen(false)} />
         </div>
         <div className="p-4 space-y-2">
+          <Link to="/profile">
           <button className="mt-4 bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 w-full">
             Go To Profile
           </button>
+          </Link>
           <button
             onClick={logoutUser}
             className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-800 w-full"

@@ -11,6 +11,14 @@ import CowFormPage from './Forms/cowForm.jsx'
 import BuffaloFormPage from './Forms/buffForm.jsx'
 import GoatFormPage from './Forms/goatForm.jsx'
 import HorseFormPage from './Forms/horseForm.jsx'
+import UserProfile from './Pages/userProfile.jsx'
+import BuyPage from './Pages/Buy.jsx'
+import { Navigate } from "react-router-dom";
+import AnimalDetail from './Pages/AnimalDetails.jsx'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+
 
 const route = createBrowserRouter([
   {
@@ -21,6 +29,10 @@ const route = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      {
+        index: true,
+        element: <Navigate to="/buy" replace />
+      },
       {
         path: "sell",
         element: <SellPage/>
@@ -38,13 +50,21 @@ const route = createBrowserRouter([
         element: <GoatFormPage/> // import this component
       },
       {
-        path: "sell/goat",
-        element: <GoatFormPage/> // import this component
-      },
-      {
         path: "sell/horse",
         element: <HorseFormPage/> // import this component
       },
+      {
+        path: "/profile",
+        element: <UserProfile/> // import this component
+      },
+      {
+        path:"/buy",
+        element:<BuyPage/>
+      },
+      {
+        path:"/animal/:type/:id",
+        element:<AnimalDetail/>
+      }
     ]
   },
   {

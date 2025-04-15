@@ -3,9 +3,9 @@ import dbConnect from "./db/dbConf.js";
 import userRouter from "./routers/user.route.js";
 import dotenv from "dotenv";
 import cors from "cors";
-import multer from "multer";
 import cookieParser from "cookie-parser";
 import cowRouter from "./routers/cow.route.js"
+import retriveRouter from "./routers/retrive.route.js"
 
 
 
@@ -36,6 +36,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", userRouter);
 app.use("/sell", cowRouter);
+app.use("/get", retriveRouter)
 
 
 app.listen(port, () => {

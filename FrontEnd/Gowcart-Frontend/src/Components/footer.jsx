@@ -9,7 +9,7 @@ const Footer = () => {
         
         
         <Link
-          to="/marketplace"
+          to="/buy"
           className="flex flex-col items-center text-white hover:text-gray-200"
         >
           <FaShoppingCart size={24} />
