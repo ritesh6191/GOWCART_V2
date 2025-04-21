@@ -9,7 +9,7 @@ import User from "../models/user.model.js";
 const sellCow = async (req, res) => {
 try {
 
-    const {Breed, Age, CalvinCount, MilkCapacity, Address, Price, longitude = 0 , latitude = 0 } = req.body;
+    const {Breed, Age, CalvinCount, MilkCapacity, Address, Price, longitude, latitude} = req.body;
 
     if([Breed, Age, CalvinCount, MilkCapacity, Address, Price,].some(field => !field?.trim())){
         return res.status(400).json({message: "All Field Are Required"});
@@ -35,10 +35,11 @@ try {
             Owner: req.user._id,
             CowImage1: image1.url,
             CowImage2: image2.url,
-            location:{
-                type:"Point",
-                coordinates: [longitude,latitude]
-            }
+            location: {
+                type: "Point",
+                coordinates: [parseFloat(longitude), parseFloat(latitude)]
+              }
+              
         })
 
         if(!cow) return res.status(500).json({message:"Failed To Create Post For Cow"});
@@ -90,10 +91,11 @@ const sellBuffallo = async (req, res) => {
                 Owner: req.user._id,
                 BuffImage1: image1.url,
                 BuffImage2: image2.url,
-                location:{
-                    type:"Point",
-                    coordinates: [longitude,latitude]
-                }
+                location: {
+                    type: "Point",
+                    coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                  }
+                  
             })
     
             if(!buffallo) return res.status(500).json({message:"Failed To Create Post For Buffallo"});
@@ -144,10 +146,11 @@ const sellGoat = async (req, res) => {
                 Owner: req.user._id,
                 GoatImage1: image1.url,
                 GoatImage2: image2.url,
-                location:{
-                    type:"Point",
-                    coordinates: [longitude,latitude]
-                }
+                location: {
+                    type: "Point",
+                    coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                  }
+                  
             })
     
             if(!goat) return res.status(500).json({message:"Failed To Create Post For Goat"});
@@ -201,10 +204,11 @@ const sellHorse = async (req, res) => {
                 Owner: req.user._id,
                 HorseImage1: image1.url,
                 HorseImage2: image2.url,
-                location:{
-                    type:"Point",
-                    coordinates: [longitude,latitude]
-                }
+                location: {
+                    type: "Point",
+                    coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                  }
+                  
             })
     
             if(!horse) return res.status(500).json({message:"Failed To Create Post For Horse"});

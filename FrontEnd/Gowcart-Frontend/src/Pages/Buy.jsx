@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import nearbyPng from "../assests/nearby-logo.png";
 
 const BuyPage = () => {
   const [animals, setAnimals] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isNearbyMode, setIsNearbyMode] = useState(false);
   const observer = useRef();
 
   const getBadgeColor = (type) => {
@@ -32,7 +34,7 @@ const BuyPage = () => {
       if (images.length < 2) return;
       const interval = setInterval(() => {
         setCurrent((prev) => (prev + 1) % images.length);
-      }, 4000); // 4 seconds
+      }, 4000);
 
       return () => clearInterval(interval);
     }, [images.length]);
@@ -55,7 +57,7 @@ const BuyPage = () => {
 
   const lastAnimalRef = useCallback(
     (node) => {
-      if (loading) return;
+      if (loading || isNearbyMode) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
@@ -64,27 +66,79 @@ const BuyPage = () => {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore]
+    [loading, hasMore, isNearbyMode]
   );
 
-  useEffect(() => {
-    const fetchAnimals = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.post(`/get/allAnimals?page=${page}`);
-        if (res.data.data.length === 0) {
-          setHasMore(false);
-        } else {
-          setAnimals((prev) => [...prev, ...res.data.data]);
-        }
-      } catch (err) {
-        console.error("Failed to load animals", err);
-      } finally {
-        setLoading(false);
+  const fetchAnimals = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`/get/allAnimals?page=${page}`);
+      if (res.data.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setAnimals((prev) => [...prev, ...res.data.data]);
       }
-    };
-    fetchAnimals();
-  }, [page]);
+    } catch (err) {
+      console.error("Failed to load animals", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchNearbyAnimals = async () => {
+    setLoading(true);
+    try {
+      const position = await new Promise((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+      );
+    
+      const { latitude, longitude } = position.coords;
+    
+      // Validate coordinates
+      if (
+        typeof latitude !== "number" ||
+        typeof longitude !== "number" ||
+        isNaN(latitude) ||
+        isNaN(longitude)
+      ) {
+        console.error("Invalid coordinates:", latitude, longitude);
+        setLoading(false);
+        return;
+      }
+    
+      console.log("Valid Coordinates:", latitude, longitude); // Debug log
+    
+      // Make sure coordinates are in the correct order: [longitude, latitude]
+      const res = await axios.post("/get/nearbyAnimals", {
+        coordinates: [longitude, latitude], // [longitude, latitude]
+        maxDistance: 100000, // 100 km in meters
+      });
+    
+      console.log("Fetched Animals:", res.data); // Debug log
+      setAnimals(res.data.data);
+      setHasMore(false);
+      setIsNearbyMode(true);
+    } catch (err) {
+      console.error("Failed to fetch nearby animals", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
+
+  const resetToAllAnimals = async () => {
+    setIsNearbyMode(false);
+    setPage(1);
+    setAnimals([]);
+    setHasMore(true);
+  };
+
+  useEffect(() => {
+    if (!isNearbyMode) {
+      fetchAnimals();
+    }
+  }, [page, isNearbyMode]);
 
   return (
     <div className="max-w-6xl mx-auto px-3 sm:px-4 py-6">
@@ -111,7 +165,7 @@ const BuyPage = () => {
           return (
             <div
               key={animal._id}
-              ref={idx === animals.length - 1 ? lastAnimalRef : null}
+              ref={idx === animals.length - 1 && !isNearbyMode ? lastAnimalRef : null}
               className="bg-white rounded-2xl border border-green-600 shadow-lg hover:shadow-xl transition-transform duration-300 flex flex-col"
             >
               <Link
@@ -120,7 +174,6 @@ const BuyPage = () => {
                 <ImageSlider image1={image1} image2={image2} />
 
                 <div className="flex flex-col justify-between flex-grow p-4 space-y-3">
-                  {/* Tag + Price */}
                   <div className="flex justify-between items-center">
                     <span
                       className={`text-xs text-white px-2 py-1 rounded-full font-medium tracking-wide ${getBadgeColor(
@@ -134,7 +187,6 @@ const BuyPage = () => {
                     </p>
                   </div>
 
-                  {/* Animal Info */}
                   <div className="text-sm space-y-1 text-gray-700 font-[500]">
                     <p>
                       <span className="font-semibold">Breed:</span>{" "}
@@ -153,7 +205,6 @@ const BuyPage = () => {
                 </div>
               </Link>
 
-              {/* Call Seller Button */}
               <a
                 href={`tel:${animal.Owner?.phone || ""}`}
                 className="m-4 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-xl text-center transition"
@@ -165,15 +216,41 @@ const BuyPage = () => {
         })}
       </div>
 
-      {/* Loading + No more */}
       {loading && (
         <p className="text-center mt-4 text-green-600 font-semibold">
           Loading...
         </p>
       )}
-      {!hasMore && (
+      {!hasMore && animals.length > 0 && (
         <p className="text-center mt-4 text-gray-500">No more animals.</p>
       )}
+
+      {/* Back to All Animals */}
+      {isNearbyMode && (
+        <div className="text-center mt-6">
+          <button
+            onClick={resetToAllAnimals}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"
+          >
+            🔄 Back to All Animals
+          </button>
+        </div>
+      )}
+
+      {/* Fixed Nearby Button */}
+      <button
+        className="fixed bottom-20 right-5 rounded-full p-0 shadow-lg z-50 w-16 h-16 bg-transparent border-none"
+        title="Show Nearby Animals"
+        onClick={fetchNearbyAnimals}
+      >
+        <img
+          src={nearbyPng}
+          alt="Nearby Animals"
+          className="w-full h-full object-contain"
+          draggable={false}
+        />
+      </button>
+
     </div>
   );
 };

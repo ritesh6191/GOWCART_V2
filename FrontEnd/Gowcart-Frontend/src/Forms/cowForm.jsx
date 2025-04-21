@@ -14,17 +14,26 @@ const CowFormPage = () => {
   const cowImage2 = watch('CowImage2');
 
   useEffect(() => {
-    // Get user geolocation for location field
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        });
-      },
-      () => toast.warn("Could not fetch location")
-    );
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          // Log more detailed error
+          toast.warn(`Could not fetch location: ${err.message}`);
+          console.error("Geolocation Error:", err);
+        }
+      );
+    } else {
+      toast.warn("Geolocation is not supported by this browser.");
+      console.error("Geolocation is not supported.");
+    }
   }, []);
+  
 
   const onSubmit = async (data) => {
     try {
@@ -44,8 +53,9 @@ const CowFormPage = () => {
       formData.append('CowImage2', data.CowImage2[0]);
 
       // Append location with coordinates as [longitude, latitude]
-      formData.append('location[coordinates][]', location.lng);
-      formData.append('location[coordinates][]', location.lat);
+      formData.append('longitude', location.lng);
+      formData.append('latitude', location.lat);
+
 
       // Post to your sell route
       await axios.post('/sell/cow', formData, {

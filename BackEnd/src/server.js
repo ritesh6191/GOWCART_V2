@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000;
 //const upload = multer();
 
 app.use(cors({
-    origin: ["http://localhost:5173","http://192.168.0.107:5173"],
+    origin: ["http://localhost:5173","http://192.168.0.107:5173", "https://192.168.245.146:5173","https://192.168.180.145:5173"],
     credentials: true,
   }));
 app.use(express.json());
@@ -41,6 +41,6 @@ app.use("/get", retriveRouter)
 app.use("/post", postRouter)
 
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });

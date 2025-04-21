@@ -41,8 +41,9 @@ const HorseFormPage = () => {
       formData.append('HorseImage1', data.HorseImage1[0]);
       formData.append('HorseImage2', data.HorseImage2[0]);
 
-      formData.append('location[coordinates][]', location.lng);
-      formData.append('location[coordinates][]', location.lat);
+      formData.append('longitude', location.lng);
+      formData.append('latitude', location.lat);
+
 
       await axios.post('/sell/horse', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

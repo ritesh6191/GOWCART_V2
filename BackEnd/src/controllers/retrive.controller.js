@@ -65,7 +65,74 @@ const getAnimalById = async (req, res) => {
   }
 };
 
+const getNearbyAnimals = async (req, res) => {
+  const { latitude, longitude } = req.body;
+  const radiusInKm = 50; // example: 50 km radius
+
+  try {
+    const [cows, buffalos, goats, horses] = await Promise.all([
+      Cow.find({
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            $maxDistance: radiusInKm * 1000, // meters
+          },
+        },
+      }).populate("Owner"),
+
+      Buffalo.find({
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            $maxDistance: radiusInKm * 1000,
+          },
+        },
+      }).populate("Owner"),
+
+      Goat.find({
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            $maxDistance: radiusInKm * 1000,
+          },
+        },
+      }).populate("Owner"),
+
+      Horse.find({
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            $maxDistance: radiusInKm * 1000,
+          },
+        },
+      }).populate("Owner"),
+    ]);
+
+    const allNearbyAnimals = [...cows, ...buffalos, ...goats, ...horses];
+    allNearbyAnimals.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json({ data: allNearbyAnimals });
+  } catch (err) {
+    console.error("Nearby animal fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch nearby animals" });
+  }
+};
+
+
 
 export { getAllAnimals,
         getAnimalById,
+        getNearbyAnimals,
  }

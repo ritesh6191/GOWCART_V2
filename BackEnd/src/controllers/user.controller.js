@@ -66,9 +66,10 @@ const loginUser = async(req, res) => {
           const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
   
           const option = {
-              httpOnly : true,
-              secure : true,
-          }
+            httpOnly : true,
+            secure : false,
+            sameSite: 'lax'
+           }
   
           return res.status(200)
           .cookie("accessToken", accessToken, option)
@@ -97,8 +98,9 @@ const logoutUser = async (req, res) => {
 
     const option = {
         httpOnly : true,
-        secure : true,
-    }
+        secure : false,
+        sameSite: 'lax'
+       }
 
     return res.status(200)
     .clearCookie("accessToken",option)
@@ -123,7 +125,8 @@ const refreshAccessToken = async(req, res) => {
 
    const option = {
     httpOnly : true,
-    secure : true
+    secure : false,
+    sameSite: 'lax'
    }
 
    return res.status(200)

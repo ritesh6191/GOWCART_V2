@@ -38,8 +38,9 @@ const GoatFormPage = () => {
       formData.append('GoatImage1', data.GoatImage1[0]);
       formData.append('GoatImage2', data.GoatImage2[0]);
 
-      formData.append('location[coordinates][]', location.lng);
-      formData.append('location[coordinates][]', location.lat);
+      formData.append('longitude', location.lng);
+      formData.append('latitude', location.lat);
+
 
       await axios.post('/sell/goat', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

@@ -44,8 +44,9 @@ const BuffaloFormPage = () => {
       formData.append('BuffImage2', data.BuffImage2[0]);
 
       // Append location with coordinates as [longitude, latitude]
-      formData.append('location[coordinates][]', location.lng);
-      formData.append('location[coordinates][]', location.lat);
+      formData.append('longitude', location.lng);
+      formData.append('latitude', location.lat);
+
 
       // Post to your sell route
       await axios.post('/sell/buffallo', formData, {

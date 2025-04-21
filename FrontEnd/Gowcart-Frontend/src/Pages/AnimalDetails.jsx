@@ -6,6 +6,7 @@ import Slider from "react-slick";
 const AnimalDetail = () => {
   const { type, id } = useParams();
   const [animal, setAnimal] = useState(null);
+  const [zoomImage, setZoomImage] = useState(null); // for modal zoom
 
   useEffect(() => {
     const fetchAnimal = async () => {
@@ -42,7 +43,6 @@ const AnimalDetail = () => {
     arrows: false,
   };
 
-  // Prepare display info dynamically
   const fieldsToDisplay = Object.entries(animal)
     .filter(
       ([key, value]) =>
@@ -73,11 +73,34 @@ const AnimalDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#f9f9f9] pb-20">
+      {/* Image Zoom Modal */}
+      {zoomImage && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center">
+          <div className="relative">
+            <button
+              className="absolute top-2 right-2 text-white text-3xl font-bold"
+              onClick={() => setZoomImage(null)}
+            >
+              &times;
+            </button>
+            <img
+              src={zoomImage}
+              alt="Zoomed Animal"
+              className="max-w-[90vw] max-h-[90vh] rounded-lg shadow-lg"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Image Slider */}
       <div className="bg-white">
         <Slider {...sliderSettings}>
           {images.map((img, idx) => (
-            <div key={idx} className="h-64 sm:h-80 flex items-center justify-center border-b">
+            <div
+              key={idx}
+              className="h-64 sm:h-80 flex items-center justify-center border-b cursor-pointer"
+              onClick={() => setZoomImage(img)}
+            >
               <img
                 src={img}
                 alt={`Animal ${idx + 1}`}
@@ -128,18 +151,20 @@ const AnimalDetail = () => {
 
       {/* Contact Buttons */}
       <div className="px-4 py-4">
-        <div className="flex justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
           <a
             href={`tel:${animal.Owner?.phone}`}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium shadow-md hover:bg-green-700 transition"
+            className="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-medium shadow-md text-center hover:bg-green-700 transition"
           >
             📞 Call Seller
           </a>
           <a
-            href={`https://wa.me/${animal.Owner?.phone}?text=Hello%20I'm%20interested%20in%20the%20${animal.Breed}%20listed%20on%20your%20GOWCART%20profile.`}
+            href={`https://wa.me/${animal.Owner?.phone}?text=${encodeURIComponent(
+              `नमस्कार! माझं नाव ${animal.Owner?.firstName} ${animal.Owner?.lastName} आहे. मी GOWCART वर तुमचं ${animal.Breed} (${animal.modelType}) पाहिलं. मला ते खरेदी करण्याची इच्छा आहे. कृपया अधिक माहिती द्या. धन्यवाद!`
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium shadow-md hover:bg-green-700 transition"
+            className="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-medium shadow-md text-center hover:bg-green-700 transition"
           >
             💬 WhatsApp Seller
           </a>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -42,8 +43,10 @@ const UserProfile = () => {
         ...prev,
         posts: prev.posts.filter((p) => p._id !== post._id),
       }));
+      toast.success("Post Deleted")
     } catch (error) {
       console.error("Error deleting post:", error);
+      toast.error("Something Went Wrong Please Try Again");
     }
   };
 
