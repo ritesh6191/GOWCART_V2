@@ -6,7 +6,7 @@ import Slider from "react-slick";
 const AnimalDetail = () => {
   const { type, id } = useParams();
   const [animal, setAnimal] = useState(null);
-  const [zoomImage, setZoomImage] = useState(null); // for modal zoom
+  const [zoomImage, setZoomImage] = useState(null);
 
   useEffect(() => {
     const fetchAnimal = async () => {
@@ -26,8 +26,8 @@ const AnimalDetail = () => {
   const images = [
     animal.CowImage1,
     animal.CowImage2,
-    animal.BuffaloImage1,
-    animal.BuffaloImage2,
+    animal.BuffImage1,
+    animal.BuffImage2,
     animal.GoatImage1,
     animal.GoatImage2,
     animal.HorseImage1,
@@ -160,7 +160,7 @@ const AnimalDetail = () => {
           </a>
           <a
             href={`https://wa.me/${animal.Owner?.phone}?text=${encodeURIComponent(
-              `नमस्कार! माझं नाव ${animal.Owner?.firstName} ${animal.Owner?.lastName} आहे. मी GOWCART वर तुमचं ${animal.Breed} (${animal.modelType}) पाहिलं. मला ते खरेदी करण्याची इच्छा आहे. कृपया अधिक माहिती द्या. धन्यवाद!`
+              `नमस्कार! मी GOWCART वर तुमचं ${animal.Breed} (${animal.modelType}) पाहिलं. मला ते खरेदी करण्याची इच्छा आहे. कृपया अधिक माहिती द्या. धन्यवाद!`
             )}`}
             target="_blank"
             rel="noopener noreferrer"

@@ -67,7 +67,7 @@ const getAnimalById = async (req, res) => {
 
 const getNearbyAnimals = async (req, res) => {
   const { latitude, longitude } = req.body;
-  const radiusInKm = 50; // example: 50 km radius
+  const radiusInKm = 50;
 
   try {
     const [cows, buffalos, goats, horses] = await Promise.all([
@@ -78,7 +78,7 @@ const getNearbyAnimals = async (req, res) => {
               type: "Point",
               coordinates: [longitude, latitude],
             },
-            $maxDistance: radiusInKm * 1000, // meters
+            $maxDistance: radiusInKm * 1000,
           },
         },
       }).populate("Owner"),
@@ -120,7 +120,17 @@ const getNearbyAnimals = async (req, res) => {
       }).populate("Owner"),
     ]);
 
-    const allNearbyAnimals = [...cows, ...buffalos, ...goats, ...horses];
+    // ✅ Add modelType to each animal
+    const addType = (arr, type) =>
+      arr.map((animal) => ({ ...animal.toObject(), modelType: type }));
+
+    const allNearbyAnimals = [
+      ...addType(cows, "Cow"),
+      ...addType(buffalos, "Buffalo"),
+      ...addType(goats, "Goat"),
+      ...addType(horses, "Horse"),
+    ];
+
     allNearbyAnimals.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     res.json({ data: allNearbyAnimals });
@@ -129,6 +139,7 @@ const getNearbyAnimals = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch nearby animals" });
   }
 };
+
 
 
 

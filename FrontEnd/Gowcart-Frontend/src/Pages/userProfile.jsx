@@ -99,7 +99,7 @@ const UserProfile = () => {
 
             if (post.modelType === "Cow") image = animal.CowImage1;
             else if (post.modelType === "Horse") image = animal.HorseImage1;
-            else if (post.modelType === "Buffalo") image = animal.BuffaloImage1;
+            else if (post.modelType === "Buffalo") image = animal.BuffImage1;
             else if (post.modelType === "Goat") image = animal.GoatImage1;
 
             return (

@@ -17,6 +17,7 @@ import { Navigate } from "react-router-dom";
 import AnimalDetail from './Pages/AnimalDetails.jsx'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import cowPage from './Pages/cowPage.jsx'
 
 
 
@@ -60,6 +61,10 @@ const route = createBrowserRouter([
       {
         path:"/buy",
         element:<BuyPage/>
+      },
+      {
+        path:"/buy/cow",
+        element:<cowPage/>
       },
       {
         path:"/animal/:type/:id",

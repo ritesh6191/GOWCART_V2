@@ -2,6 +2,10 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import nearbyPng from "../assests/nearby-logo.png";
+import CowImg from "../assests/Buy/cowBuy.png";
+import BuffImg from "../assests/Buy/buffBuy.png";
+import GoatImg from "../assests/Buy/goatBuy.png";
+import HorseImg from "../assests/Buy/horseBuy.png";
 
 const BuyPage = () => {
   const [animals, setAnimals] = useState([]);
@@ -106,15 +110,12 @@ const BuyPage = () => {
         return;
       }
     
-      console.log("Valid Coordinates:", latitude, longitude); // Debug log
-    
-      // Make sure coordinates are in the correct order: [longitude, latitude]
       const res = await axios.post("/get/nearbyAnimals", {
-        coordinates: [longitude, latitude], // [longitude, latitude]
+        latitude,
+        longitude,
         maxDistance: 100000, // 100 km in meters
       });
     
-      console.log("Fetched Animals:", res.data); // Debug log
       setAnimals(res.data.data);
       setHasMore(false);
       setIsNearbyMode(true);
@@ -146,17 +147,40 @@ const BuyPage = () => {
         🛒 Animals for Sale
       </h1>
 
+        <div className="flex justify-center gap-4 mb-6 flex-wrap">
+          {[
+            { label: "Cow", img: CowImg },
+            { label: "Buffalo", img: BuffImg },
+            { label: "Goat", img: GoatImg },
+            { label: "Horse", img: HorseImg },
+          ].map((animal) => (
+            <button
+              key={animal.label}
+              onClick={() => navigate(`/buy/${animal.label.toLowerCase()}`)}
+              className="flex flex-col items-center w-20 hover:scale-105 transition-transform"
+            >
+             <img
+                src={animal.img}
+                alt={animal.label}
+                className="w-16 h-16 object-cover mb-1 rounded-full border border-green-600 overflow-hidden"
+              />
+              <span className="text-xs font-semibold text-green-700">{animal.label}</span>
+            </button>
+          ))}
+        </div>
+
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {animals.map((animal, idx) => {
           const image1 =
             animal.CowImage1 ||
-            animal.BuffaloImage1 ||
+            animal.BuffImage1 ||
             animal.GoatImage1 ||
             animal.HorseImage1;
 
           const image2 =
             animal.CowImage2 ||
-            animal.BuffaloImage2 ||
+            animal.BuffImage2 ||
             animal.GoatImage2 ||
             animal.HorseImage2;
 
@@ -169,7 +193,7 @@ const BuyPage = () => {
               className="bg-white rounded-2xl border border-green-600 shadow-lg hover:shadow-xl transition-transform duration-300 flex flex-col"
             >
               <Link
-                to={`/animal/${animal.modelType.toLowerCase()}/${animal._id}`}
+                to={`/animal/${animal.modelType?.toLowerCase()}/${animal._id}`}
               >
                 <ImageSlider image1={image1} image2={image2} />
 
