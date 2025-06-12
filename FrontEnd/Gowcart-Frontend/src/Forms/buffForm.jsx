@@ -9,7 +9,7 @@ const BuffaloFormPage = () => {
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Watch file inputs for image previews
+  
   const buffImage1 = watch('BuffImage1');
   const buffImage2 = watch('BuffImage2');
 
@@ -48,7 +48,7 @@ const BuffaloFormPage = () => {
       formData.append('latitude', location.lat);
 
 
-      // Post to your sell route
+      
       await axios.post('/sell/buffallo', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true

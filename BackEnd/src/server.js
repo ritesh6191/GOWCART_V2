@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import cowRouter from "./routers/cow.route.js";
 import retriveRouter from "./routers/retrive.route.js";
 import postRouter from "./routers/post.route.js";
+import filterRouter from './routers/filter.route.js';
 
 
 
@@ -39,6 +40,7 @@ app.use("/user", userRouter);
 app.use("/sell", cowRouter);
 app.use("/get", retriveRouter)
 app.use("/post", postRouter)
+app.use("/filter", filterRouter)
 
 
 app.listen(port, () => {

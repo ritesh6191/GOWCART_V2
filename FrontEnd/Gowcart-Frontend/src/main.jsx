@@ -17,8 +17,7 @@ import { Navigate } from "react-router-dom";
 import AnimalDetail from './Pages/AnimalDetails.jsx'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import cowPage from './Pages/cowPage.jsx'
-
+import CowFilterPage from './Pages/cowPage.jsx'
 
 
 const route = createBrowserRouter([
@@ -40,23 +39,23 @@ const route = createBrowserRouter([
       },
       {
         path: "sell/cow",
-        element: <CowFormPage/> // import this component
+        element: <CowFormPage/> 
       },
       {
         path: "sell/buffalo",
-        element: <BuffaloFormPage/> // import this component
+        element: <BuffaloFormPage/> 
       },
       {
         path: "sell/goat",
-        element: <GoatFormPage/> // import this component
+        element: <GoatFormPage/> 
       },
       {
         path: "sell/horse",
-        element: <HorseFormPage/> // import this component
+        element: <HorseFormPage/> 
       },
       {
         path: "/profile",
-        element: <UserProfile/> // import this component
+        element: <UserProfile/> 
       },
       {
         path:"/buy",
@@ -64,7 +63,19 @@ const route = createBrowserRouter([
       },
       {
         path:"/buy/cow",
-        element:<cowPage/>
+        element:<CowFilterPage/>
+      },
+      {
+        path:"/buy/buffalo",
+        element:<buffPage/>
+      },
+      {
+        path:"/buy/goat",
+        element:<goatPage/>
+      },
+      {
+        path:"/buy/horse",
+        element:<horsePage/>
       },
       {
         path:"/animal/:type/:id",

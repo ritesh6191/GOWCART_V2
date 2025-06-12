@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import nearbyPng from "../assests/nearby-logo.png";
 import CowImg from "../assests/Buy/cowBuy.png";
 import BuffImg from "../assests/Buy/buffBuy.png";
@@ -14,6 +14,8 @@ const BuyPage = () => {
   const [loading, setLoading] = useState(false);
   const [isNearbyMode, setIsNearbyMode] = useState(false);
   const observer = useRef();
+
+  const navigate = useNavigate();
 
   const getBadgeColor = (type) => {
     switch (type) {
@@ -143,10 +145,6 @@ const BuyPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-3 sm:px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6 text-green-700 text-center">
-        🛒 Animals for Sale
-      </h1>
-
         <div className="flex justify-center gap-4 mb-6 flex-wrap">
           {[
             { label: "Cow", img: CowImg },

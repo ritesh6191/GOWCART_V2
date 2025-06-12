@@ -9,7 +9,7 @@ const getAllAnimals = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * ITEMS_PER_PAGE;
 
-    // Fetch each type with populated Owner
+    
     const [cows, buffaloes, goats, horses] = await Promise.all([
       Cow.find().sort({ createdAt: -1 }).skip(skip).limit(ITEMS_PER_PAGE).populate("Owner", "firstName lastName phone").lean(),
       Buffalo.find().sort({ createdAt: -1 }).skip(skip).limit(ITEMS_PER_PAGE).populate("Owner", "firstName lastName phone").lean(),
@@ -25,7 +25,7 @@ const getAllAnimals = async (req, res) => {
       ...horses.map((a) => ({ ...a, modelType: "Horse" })),
     ];
 
-    // Sort and slice combined results
+   
     allAnimals.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const paginated = allAnimals.slice(0, ITEMS_PER_PAGE);
 

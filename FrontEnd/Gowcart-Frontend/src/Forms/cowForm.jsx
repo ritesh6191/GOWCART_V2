@@ -9,7 +9,7 @@ const CowFormPage = () => {
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Watch file inputs for image previews
+  
   const cowImage1 = watch('CowImage1');
   const cowImage2 = watch('CowImage2');
 
@@ -23,7 +23,7 @@ const CowFormPage = () => {
           });
         },
         (err) => {
-          // Log more detailed error
+         
           toast.warn(`Could not fetch location: ${err.message}`);
           console.error("Geolocation Error:", err);
         }
@@ -56,8 +56,6 @@ const CowFormPage = () => {
       formData.append('longitude', location.lng);
       formData.append('latitude', location.lat);
 
-
-      // Post to your sell route
       await axios.post('/sell/cow', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true

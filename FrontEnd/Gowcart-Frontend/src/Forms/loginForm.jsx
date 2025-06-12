@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // ✅ import navigation
+import { useNavigate } from 'react-router-dom'; 
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate(); // ✅ initialize
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     setServerError('');
